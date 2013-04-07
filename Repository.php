@@ -150,32 +150,42 @@ class Repository extends Object
 
 	/**
 	 * @param string
-	 * @param mixed
+	 * @param mixed|ActiveRow
 	 * @return ActiveRow|FALSE
 	 */
 	protected function getBy($name, $value)
 	{
-		$name = $this->toUnderscoreCase($name);
+		if ($value instanceof ActiveRow) {
+			return $value->{$this->getTableName()};
 
-		return $this->select()
-					->where($name, $value)
-					->limit(1)
-					->fetch();
+		} else {
+			$name = $this->toUnderscoreCase($name);
+
+			return $this->select()
+						->where($name, $value)
+						->limit(1)
+						->fetch();			
+		}
 	}
 
 
 
 	/**
 	 * @param string
-	 * @param mixed
+	 * @param mixed|ActiveRow
 	 * @return Selection
 	 */
 	protected function findBy($name, $value)
 	{
-		$name = $this->toUnderscoreCase($name);
+		if ($value instanceof ActiveRow) {
+			return $value->related($this->getTableName());
 
-		return $this->select()
-					->where($name, $value);
+		} else {
+			$name = $this->toUnderscoreCase($name);
+
+			return $this->select()
+						->where($name, $value);
+		}
 	}
 
 
