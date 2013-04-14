@@ -1,8 +1,8 @@
 <?php
 namespace Shake;
 
+use \Shake\Utils\Strings;
 use \Nette\Object,
-	\Nette\Utils\Strings,
 	\Nette\Database\Connection,
 	\Nette\Database\Table\Selection,
 	\Nette\Database\Table\ActiveRow,
@@ -67,6 +67,16 @@ class Repository extends Object
 					->where('id', $id)
 					->limit(1)
 					->fetch();
+	}
+
+
+
+	/**
+	 * @return Selection
+	 */
+	public function getList() 
+	{
+		return $this->select();
 	}
 
 
