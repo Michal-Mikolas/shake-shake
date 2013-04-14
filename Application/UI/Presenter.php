@@ -1,0 +1,181 @@
+<?php
+namespace Shake\Application\UI;
+
+use \Shake\Utils\Strings;
+use \Nette;
+
+
+/**
+ * Presenter
+ *
+ * @author  Michal Mikoláš <nanuqcz@gmail.com>
+ */
+class Presenter extends Nette\Application\UI\Presenter
+{
+
+	public function getEntityName()
+	{
+		$name = $this->name;                                    // Admin:ShopCategory
+		$name = trim(substr($name, strrpos($name, ':')), ':');  // ShopCategory
+		$name = Strings::toCamelCase($name);                    // shopCategory
+
+		return $name;
+	}
+
+
+
+	public function getListName()
+	{
+		return Strings::plural( $this->getEntityName() );
+	}
+
+
+
+	public function getPaginatedListName()
+	{
+		return $this->getListName() . 'Paginated';
+	}
+
+
+
+	public function getRepositoryName()
+	{
+		return $this->getEntityName() . 'Repository';
+	}
+
+
+
+	public function renderDefault()
+	{
+		$this->template->{$this->listName} = $this->context->{$this->repositoryName}->getList();
+		$this->template->{$this->paginatedListName} = $this->paginate( $this->context->{$this->repositoryName}->getList() );
+	}
+
+
+
+	public function renderDetail($id)
+	{
+		$this->template->{$this->entityName} = $this->context->{$this->repositoryName}->get($id);
+	}
+
+
+
+	public function renderEdit($id)
+	{
+		$entry = $this->context->{$this->repositoryName}->get($id);
+		
+		$this->template->{$this->entityName} = $entry;
+		$this['form'] = $entry;
+	}
+
+
+
+	public function renderAdd()
+	{
+	}
+
+
+
+	public function handleDelete($id)
+	{
+		$result = $this->context->{$this->repositoryName}->delete($id);
+
+		if ($result) {
+			$this->flashMessage('Entry succesfully deleted.');
+		} else {
+			$this->flashMessage('No data was deleted.', 'error');			
+		}
+
+		$this->redirect('this');
+	}
+
+
+
+	protected function createComponentForm($name)
+	{
+		/** @todo */
+	}
+
+
+
+	public function processForm(Nette\Application\UI\Form $form)
+	{
+		$values = $form->values;
+
+		// Edit
+		if ($id = $this->getParam('id')) {
+			$this->context->{$this->repositoryName}->update($id, $values);
+			$this->flashMessage('Entry successfully updated.');
+
+		// Create
+		} else {
+			$this->context->{$this->repositoryName}->create($values);
+			$this->flashMessage('Entry successfully created.');
+		}
+
+		$this->redirect('this');
+	}
+
+
+
+	protected function createComponentPaginator($name)
+	{
+	}
+
+
+
+	protected function paginate($data)
+	{
+	}
+
+
+
+	public function formatTemplateFiles()
+	{
+		$name = $this->getName();		
+		$modules = explode(':', $name);
+		$presenter = array_pop($modules);
+
+		$dir = $this->context->parameters['appDir'];
+		foreach ($modules as $module) {
+			$dir .= "/{$module}Module";
+		}
+
+		return array(
+			"$dir/templates/$presenter/$this->view.latte",
+			"$dir/templates/$presenter.$this->view.latte",
+			"$dir/templates/$presenter/$this->view.phtml",
+			"$dir/templates/$presenter.$this->view.phtml",
+		);
+	}
+
+
+
+	public function formatLayoutTemplateFiles()
+	{
+		$name = $this->getName();		
+		$modules = explode(':', $name);
+		$presenter = array_pop($modules);
+		$layout = $this->layout ? $this->layout : 'layout';
+
+		$dir = $this->context->parameters['appDir'];
+		foreach ($modules as $module) {
+			$dir .= "/{$module}Module";
+		}
+		
+		$list = array(
+			"$dir/templates/$presenter/@$layout.latte",
+			"$dir/templates/$presenter.@$layout.latte",
+			"$dir/templates/$presenter/@$layout.phtml",
+			"$dir/templates/$presenter.@$layout.phtml",
+		);
+		do {
+			$list[] = "$dir/templates/@$layout.latte";
+			$list[] = "$dir/templates/@$layout.phtml";
+			$dir = dirname($dir);
+		} while ($dir && ($name = substr($name, 0, strrpos($name, ':'))));
+		
+		return $list;
+	}
+
+}
