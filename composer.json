@@ -1,0 +1,20 @@
+{
+	"name": "shake/shake",
+	"type": "library",
+	"description": "'Convention over configuration' layer for Nette framework.",
+	"keywords": ["nette", "shake", "php"],
+	"homepage": "https://bitbucket.org/nanuqcz/shake/wiki/Home",
+	"authors": [
+		{
+			"name": "Michal Mikoláš",
+			"homepage": "http://michal.webshake.cz"
+		}
+	],
+	"require": {
+		"php": ">=5.3.0",
+		"nette/nette": "2.0.*"
+	},
+	"autoload": {
+		"files": ["loader.php"]
+	}
+}
