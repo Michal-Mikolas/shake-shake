@@ -13,18 +13,6 @@ use \Nette;
  */
 class PresenterFactory extends Nette\Application\PresenterFactory
 {
-	/** @var Nette\DI\Container */
-	private $container;
-
-
-
-	public function __construct($baseDir, Nette\DI\Container $container)
-	{
-		parent::__construct($baseDir, $container);
-		$this->container = $container;
-	}
-
-
 
 	public function getPresenterClass(& $name)
 	{
