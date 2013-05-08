@@ -153,7 +153,9 @@ class Repository extends Object
 	 */
 	protected function select()
 	{
-		return $this->conn->table($this->getTableName());
+		$tableName = $this->getTableName();
+
+		return $this->conn->table($tableName)->select("$tableName.*");
 	}
 
 
