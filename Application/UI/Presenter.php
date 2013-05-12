@@ -1,7 +1,8 @@
 <?php
 namespace Shake\Application\UI;
 
-use \Shake\Utils\Strings;
+use \Shake\Utils\Strings,
+	\Shake\VisualPaginator;
 use \Nette;
 
 
@@ -48,7 +49,13 @@ class Presenter extends Nette\Application\UI\Presenter
 	public function renderDefault()
 	{
 		$this->template->{$this->listName} = $this->context->{$this->repositoryName}->getList();
-		$this->template->{$this->paginatedListName} = $this->paginate( $this->context->{$this->repositoryName}->getList() );
+
+		$data = $this->context->{$this->repositoryName}->getList();
+		$this['visualPaginator']->paginator->itemCount = $this->context->{$this->repositoryName}->count($data);
+		$this->template->{$this->paginatedListName} = $this->paginate(
+			$data,
+			$this->context->{$this->repositoryName}
+		);
 	}
 
 
@@ -118,14 +125,23 @@ class Presenter extends Nette\Application\UI\Presenter
 
 
 
-	protected function createComponentPaginator($name)
+	protected function createComponentVisualPaginator($name)
 	{
+		$vp = new VisualPaginator($this, $name);
+		$vp->paginator->itemsPerPage = 10;
+
+		return $vp;
 	}
 
 
 
-	protected function paginate($data)
+	protected function paginate($data, $repository)
 	{
+		return $repository->applyLimit(
+			$data, 
+			$this['visualPaginator']->paginator->itemsPerPage, 
+			$this['visualPaginator']->paginator->offset
+		);
 	}
 
 

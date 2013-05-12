@@ -5,6 +5,7 @@ use \Shake\Utils\Strings;
 use \Nette\Object,
 	\Nette\Database\Connection,
 	\Nette\Database\Table\Selection,
+	\Nette\Database\Table\GroupedSelection,
 	\Nette\Database\Table\ActiveRow,
 	\Nette\MemberAccessException;
 
@@ -111,6 +112,54 @@ class Repository extends Object
 	public function delete($id) 
 	{
 		return $this->conn->table($this->getTableName())->get($id)->delete();
+	}
+
+
+
+	/**
+	 * @param array
+	 * @return int
+	 */
+	public function count($data)
+	{
+		if ($data instanceof Selection) {
+			return $data->count('*');
+
+		} else {
+			return count($data);
+		}
+	}
+
+
+
+	/**
+	 * @param array
+	 * @param int
+	 * @param int
+	 * @return array
+	 */
+	public function applyLimit($data, $limit, $offset)
+	{
+		// Selection
+		if (($data instanceof Selection) && !($data instanceof GroupedSelection)) {
+			return $data->limit($limit, $offset);
+
+		// GroupedSelection
+		} elseif ($data instanceof Iterator) {
+			$data = iterator_to_array($data);
+			return array_slice($data, $offset, $limit);
+			
+		// Array
+		} elseif ($data instanceof ArrayAccess) {
+			return array_slice($data, $offset, $limit);
+		
+		// Bad argument?
+		} else {
+			if (is_object($data)) 
+				throw new Nette\InvalidArgumentException("Can't apply limit to instance of " . get_class($data) . ".");
+			else
+				throw new Nette\InvalidArgumentException("Can't apply limit to " . gettype($data) . " type variable.");
+		}
 	}
 
 
