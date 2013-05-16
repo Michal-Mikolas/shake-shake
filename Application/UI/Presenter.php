@@ -72,7 +72,7 @@ class Presenter extends Nette\Application\UI\Presenter
 		$entry = $this->context->{$this->repositoryName}->get($id);
 		
 		$this->template->{$this->entityName} = $entry;
-		$this['form'] = $entry;
+		$this['form']->setDefaults($entry);
 	}
 
 
