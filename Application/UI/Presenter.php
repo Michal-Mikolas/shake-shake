@@ -46,15 +46,22 @@ class Presenter extends Nette\Application\UI\Presenter
 
 
 
+	public function getServiceName()
+	{
+		return $this->getEntityName() . 'Service';
+	}
+
+
+
 	public function renderDefault()
 	{
-		$this->template->{$this->listName} = $this->context->{$this->repositoryName}->getList();
+		$this->template->{$this->listName} = $this->context->{$this->serviceName}->getList();
 
-		$data = $this->context->{$this->repositoryName}->getList();
-		$this['visualPaginator']->paginator->itemCount = $this->context->{$this->repositoryName}->count($data);
+		$data = $this->context->{$this->serviceName}->getList();
+		$this['visualPaginator']->paginator->itemCount = $this->context->{$this->serviceName}->count($data);
 		$this->template->{$this->paginatedListName} = $this->paginate(
 			$data,
-			$this->context->{$this->repositoryName}
+			$this->context->{$this->serviceName}
 		);
 	}
 
@@ -62,14 +69,14 @@ class Presenter extends Nette\Application\UI\Presenter
 
 	public function renderDetail($id)
 	{
-		$this->template->{$this->entityName} = $this->context->{$this->repositoryName}->get($id);
+		$this->template->{$this->entityName} = $this->context->{$this->serviceName}->get($id);
 	}
 
 
 
 	public function renderEdit($id)
 	{
-		$entry = $this->context->{$this->repositoryName}->get($id);
+		$entry = $this->context->{$this->serviceName}->get($id);
 		
 		$this->template->{$this->entityName} = $entry;
 		$this['form']->setDefaults($entry);
@@ -85,7 +92,7 @@ class Presenter extends Nette\Application\UI\Presenter
 
 	public function handleDelete($id)
 	{
-		$result = $this->context->{$this->repositoryName}->delete($id);
+		$result = $this->context->{$this->serviceName}->delete($id);
 
 		if ($result) {
 			$this->flashMessage('Entry succesfully deleted.');
@@ -111,12 +118,12 @@ class Presenter extends Nette\Application\UI\Presenter
 
 		// Edit
 		if ($id = $this->getParam('id')) {
-			$this->context->{$this->repositoryName}->update($id, $values);
+			$this->context->{$this->serviceName}->update($id, $values);
 			$this->flashMessage('Entry successfully updated.');
 
 		// Create
 		} else {
-			$this->context->{$this->repositoryName}->create($values);
+			$this->context->{$this->serviceName}->create($values);
 			$this->flashMessage('Entry successfully created.');
 		}
 
