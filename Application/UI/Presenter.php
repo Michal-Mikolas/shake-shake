@@ -55,9 +55,9 @@ class Presenter extends Nette\Application\UI\Presenter
 
 	public function renderDefault()
 	{
-		$this->template->{$this->listName} = $this->context->{$this->serviceName}->getList();
+		$this->template->{$this->listName} = $this->context->{$this->serviceName}->search();
 
-		$data = $this->context->{$this->serviceName}->getList();
+		$data = $this->context->{$this->serviceName}->search();
 		$this['paginator']->paginator->itemCount = $this->context->{$this->serviceName}->count($data);
 		$this->template->{$this->paginatedListName} = $this->paginate(
 			$data,
@@ -142,9 +142,9 @@ class Presenter extends Nette\Application\UI\Presenter
 
 
 
-	protected function paginate($data, $repository)
+	protected function paginate($data, $service)
 	{
-		return $repository->applyLimit(
+		return $service->applyLimit(
 			$data, 
 			$this['paginator']->paginator->itemsPerPage, 
 			$this['paginator']->paginator->offset
