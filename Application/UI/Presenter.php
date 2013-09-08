@@ -58,7 +58,7 @@ class Presenter extends Nette\Application\UI\Presenter
 		$this->template->{$this->listName} = $this->context->{$this->serviceName}->getList();
 
 		$data = $this->context->{$this->serviceName}->getList();
-		$this['visualPaginator']->paginator->itemCount = $this->context->{$this->serviceName}->count($data);
+		$this['paginator']->paginator->itemCount = $this->context->{$this->serviceName}->count($data);
 		$this->template->{$this->paginatedListName} = $this->paginate(
 			$data,
 			$this->context->{$this->serviceName}
@@ -132,7 +132,7 @@ class Presenter extends Nette\Application\UI\Presenter
 
 
 
-	protected function createComponentVisualPaginator($name)
+	protected function createComponentPaginator($name)
 	{
 		$vp = new VisualPaginator($this, $name);
 		$vp->paginator->itemsPerPage = 10;
@@ -146,8 +146,8 @@ class Presenter extends Nette\Application\UI\Presenter
 	{
 		return $repository->applyLimit(
 			$data, 
-			$this['visualPaginator']->paginator->itemsPerPage, 
-			$this['visualPaginator']->paginator->offset
+			$this['paginator']->paginator->itemsPerPage, 
+			$this['paginator']->paginator->offset
 		);
 	}
 
