@@ -20,16 +20,16 @@ use \Nette\Object,
 class Repository extends Object
 {
 	/** @var Connection */
-	protected $conn;
+	private $connection;
 
 	/** @var string */
 	private $tableName;
 
 
 
-	public function __construct(Connection $conn)
+	public function __construct(Connection $connection)
 	{
-		$this->conn = $conn;
+		$this->connection = $connection;
 	}
 
 
@@ -60,9 +60,26 @@ class Repository extends Object
 
 	/**
 	 * @param int
-	 * @return ActiveRow|FALSE
+	 * @return ActiveRow
+	 * @throws Nette\Application\BadRequestException
 	 */
 	public function get($id) 
+	{
+		$row = $this->find($id);
+
+		if ($row === FALSE)
+			throw new BadRequestException('Entry not found', 404);
+
+		return $row;
+	}
+
+
+
+	/**
+	 * @param int
+	 * @return ActiveRow|FALSE
+	 */
+	public function find($id) 
 	{
 		return $this->select()
 					->where('id', $id)
@@ -73,11 +90,21 @@ class Repository extends Object
 
 
 	/**
+	 * @param array|NULL
+	 * @param array|NULL
 	 * @return Selection
 	 */
-	public function getList() 
+	public function search($conditions = NULL, $limit = NULL) 
 	{
-		return $this->select();
+		$selection = $this->select();
+
+		if ($conditions) 
+			$selection->where($conditions);
+
+		if ($limit) 
+			$selection->limit($limit[0], $limit[1]);
+
+		return $selection;
 	}
 
 
@@ -88,7 +115,7 @@ class Repository extends Object
 	 */
 	public function create($values) 
 	{
-		return $this->conn->table($this->getTableName())->insert($values);
+		return $this->connection->table($this->getTableName())->insert($values);
 	}
 
 
@@ -100,7 +127,7 @@ class Repository extends Object
 	 */
 	public function update($id, $values) 
 	{
-		return $this->conn->table($this->getTableName())->get($id)->update($values);
+		return $this->connection->table($this->getTableName())->get($id)->update($values);
 	}
 
 
@@ -111,7 +138,7 @@ class Repository extends Object
 	 */
 	public function delete($id) 
 	{
-		return $this->conn->table($this->getTableName())->get($id)->delete();
+		return $this->connection->table($this->getTableName())->get($id)->delete();
 	}
 
 
@@ -165,13 +192,34 @@ class Repository extends Object
 
 
 	/**
+	 * @return Connection
+	 */
+	public function getConnection()
+	{
+		return $this->connection;
+	}
+
+
+
+	/**
+	 * Alias for getConnection()
+	 * @return Connection
+	 */
+	public function getConn()
+	{
+		return $this->getConnection();
+	}
+
+
+
+	/**
 	 * @param string
 	 * @param array
 	 * @return mixed
 	 */
 	public function __call($name, $args)
 	{
-		// getBy<column>
+		// findBy<column>
 		if (Strings::startsWith($name, 'getBy')) {
 			$column = substr($name, 5);
 			return $this->getBy($column, $args[0]);
@@ -181,15 +229,20 @@ class Repository extends Object
 			$column = substr($name, 6);
 			return $this->findBy($column, $args[0]);
 
+		// searchBy<column>
+		} elseif (Strings::startsWith($name, 'searchBy')) {
+			$column = substr($name, 8);
+			return $this->searchBy($column, $args[0]);
+
 		// updateBy<column>
 		} elseif (Strings::startsWith($name, 'updateBy')) {
 			$column = substr($name, 8);
-			return $this->updateBy($column, $args[0]);
+			return $this->updateBy($column, $args[0], $args[1]);
 
 		// deleteBy<column>
-		} elseif (Strings::startsWith($name, 'deleteBy')) {
+		} elseif (Strings::startsWith($name, 'deleteBy')) {	
 			$column = substr($name, 8);
-			return $this->deleteBy($column, $args[0]);
+			return $this->deleteBy($column, $args[0], $args[1]);
 		}
 
 		throw new MemberAccessException("Call to undefined method " . get_class($this) . "::$name().");
@@ -204,7 +257,25 @@ class Repository extends Object
 	{
 		$tableName = $this->getTableName();
 
-		return $this->conn->table($tableName)->select("$tableName.*");
+		return $this->connection->table($tableName)->select("$tableName.*");
+	}
+
+
+
+	/**
+	 * @param string
+	 * @param mixed|ActiveRow
+	 * @return ActiveRow|FALSE
+	 * @throws Nette\Application\BadRequestException
+	 */
+	protected function getBy($name, $value)
+	{
+		$row = $this->findBy($name, $value);
+
+		if ($row === FALSE)
+			throw new BadRequestException('Entry not found', 404);
+
+		return $row;
 	}
 
 
@@ -214,7 +285,7 @@ class Repository extends Object
 	 * @param mixed|ActiveRow
 	 * @return ActiveRow|FALSE
 	 */
-	protected function getBy($name, $value)
+	protected function findBy($name, $value)
 	{
 		if ($value instanceof ActiveRow) {
 			return $value->{$this->getTableName()};
@@ -234,9 +305,10 @@ class Repository extends Object
 	/**
 	 * @param string
 	 * @param mixed|ActiveRow
+	 * @param array|NULL
 	 * @return Selection
 	 */
-	protected function findBy($name, $value)
+	protected function searchBy($name, $value, $limit = NULL)
 	{
 		if ($value instanceof ActiveRow) {
 			return $value->related($this->getTableName());
@@ -244,8 +316,13 @@ class Repository extends Object
 		} else {
 			$name = $this->toUnderscoreCase($name);
 
-			return $this->select()
-						->where($name, $value);
+			$selection = $this->select()
+				->where($name, $value);
+
+			if ($limit)
+				$selection->limit($limit[0], $limit[1]);
+
+			return $selection;
 		}
 	}
 
