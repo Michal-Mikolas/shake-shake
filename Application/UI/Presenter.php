@@ -153,7 +153,7 @@ class Presenter extends Nette\Application\UI\Presenter
 
 
 
-	public function __get($name)
+	public function &__get($name)
 	{
 		// Default behavior
 		try {
