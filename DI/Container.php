@@ -108,7 +108,6 @@ class Container extends Nette\DI\Container
 			$service = $this->createInstance('\Shake\Service');
 
 			$repositoryName = substr($className, 0, strrpos($className, 'Service'));
-			$repositoryName = Strings::toUnderscoreCase($repositoryName);
 			$repositoryName .= 'Repository';
 			$service->setRepositoryName($repositoryName);
 		}
