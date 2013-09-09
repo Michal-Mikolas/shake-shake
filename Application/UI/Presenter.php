@@ -160,14 +160,18 @@ class Presenter extends Nette\Application\UI\Presenter
 			return parent::__get($name);
 
 		// Automatic service getter from context
-		} catch (MemberAccessException $e) {
+		} catch (\Nette\MemberAccessException $e) {
 			// Repository
-			if (strrpos($name, 'Repository') == (strlen($name) - 10))
-				return $this->context->$name;
+			if (strrpos($name, 'Repository') == (strlen($name) - 10)) {
+				$repository = $this->context->$name;
+				return $repository;
+			}
 			
 			// Service
-			if (strrpos($name, 'Service') == (strlen($name) - 7))
-				return $this->context->$name;
+			if (strrpos($name, 'Service') == (strlen($name) - 7)) {
+				$service = $this->context->$name;
+				return $service;
+			}
 
 			throw $e;
 		}
