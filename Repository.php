@@ -251,24 +251,12 @@ class Repository extends Object
 
 
 	/**
-	 * @return Selection
-	 */
-	protected function select()
-	{
-		$tableName = $this->getTableName();
-
-		return $this->connection->table($tableName)->select("$tableName.*");
-	}
-
-
-
-	/**
 	 * @param string
 	 * @param mixed|ActiveRow
 	 * @return ActiveRow|FALSE
 	 * @throws Nette\Application\BadRequestException
 	 */
-	protected function getBy($name, $value)
+	public function getBy($name, $value)
 	{
 		$row = $this->findBy($name, $value);
 
@@ -285,7 +273,7 @@ class Repository extends Object
 	 * @param mixed|ActiveRow
 	 * @return ActiveRow|FALSE
 	 */
-	protected function findBy($name, $value)
+	public function findBy($name, $value)
 	{
 		if ($value instanceof ActiveRow) {
 			return $value->{$this->getTableName()};
@@ -308,7 +296,7 @@ class Repository extends Object
 	 * @param array|NULL
 	 * @return Selection
 	 */
-	protected function searchBy($name, $value, $limit = NULL)
+	public function searchBy($name, $value, $limit = NULL)
 	{
 		if ($value instanceof ActiveRow) {
 			return $value->related($this->getTableName());
@@ -334,7 +322,7 @@ class Repository extends Object
 	 * @param array
 	 * @return int
 	 */
-	protected function updateBy($name, $value, $values)
+	public function updateBy($name, $value, $values)
 	{
 		return $this->findBy($name, $value)->update($values);
 	}
@@ -346,9 +334,21 @@ class Repository extends Object
 	 * @param mixed
 	 * @return ActiveRow|FALSE
 	 */
-	protected function deleteBy($name, $value)
+	public function deleteBy($name, $value)
 	{
 		return $this->findBy($name, $value)->delete();
+	}
+
+
+
+	/**
+	 * @return Selection
+	 */
+	protected function select()
+	{
+		$tableName = $this->getTableName();
+
+		return $this->connection->table($tableName)->select("$tableName.*");
 	}
 
 
