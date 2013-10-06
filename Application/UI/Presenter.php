@@ -187,7 +187,7 @@ class Presenter extends Nette\Application\UI\Presenter
 
 		$dir = $this->context->parameters['appDir'];
 		foreach ($modules as $module) {
-			$module = lcfirst($module);
+			$module = ucfirst($module);
 			$dir .= "/{$module}Module";
 		}
 
@@ -210,7 +210,7 @@ class Presenter extends Nette\Application\UI\Presenter
 
 		$dir = $this->context->parameters['appDir'];
 		foreach ($modules as $module) {
-			$module = lcfirst($module);
+			$module = ucfirst($module);
 			$dir .= "/{$module}Module";
 		}
 		
