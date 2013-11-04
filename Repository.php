@@ -1,13 +1,15 @@
 <?php
 namespace Shake;
 
-use \Shake\Utils\Strings;
-use \Nette\Object,
-	\Nette\Database\Connection,
-	\Nette\Database\Table\Selection,
-	\Nette\Database\Table\GroupedSelection,
-	\Nette\Database\Table\ActiveRow,
-	\Nette\MemberAccessException;
+use Shake\Utils\Strings;
+use Nette\Object,
+	Nette\Database\Connection,
+	Nette\Database\Table\Selection,
+	Nette\Database\Table\GroupedSelection,
+	Nette\Database\Table\ActiveRow,
+	Nette\MemberAccessException,
+	Nette\InvalidArgumentException,
+	Nette\BadRequestException;
 
 
 /**
@@ -183,9 +185,9 @@ class Repository extends Object
 		// Bad argument?
 		} else {
 			if (is_object($data)) 
-				throw new Nette\InvalidArgumentException("Can't apply limit to instance of " . get_class($data) . ".");
+				throw new InvalidArgumentException("Can't apply limit to instance of " . get_class($data) . ".");
 			else
-				throw new Nette\InvalidArgumentException("Can't apply limit to " . gettype($data) . " type variable.");
+				throw new InvalidArgumentException("Can't apply limit to " . gettype($data) . " type variable.");
 		}
 	}
 
