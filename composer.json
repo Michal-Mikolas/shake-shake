@@ -15,12 +15,12 @@
 		{
 			"type": "package",
 			"package": {
-			  "name": "jrslv/vp-nette-bootstrap",
-			  "version": "master",
-			  "source": {
-				  "url": "https://github.com/jrslv/vp-nette-bootstrap.git",
-				  "type": "git",
-				  "reference": "master"
+				"name": "jrslv/vp-nette-bootstrap",
+				"version": "master",
+				"source": {
+					"url": "https://github.com/jrslv/vp-nette-bootstrap.git",
+					"type": "git",
+					"reference": "master"
 				}
 			}
 		}

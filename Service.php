@@ -77,7 +77,7 @@ class Service extends Object
 	/**
 	 * @return bool
 	 */
-	protected function beginTransaction()
+	public function beginTransaction()
 	{
 		$this->transactionDepth++;
 
@@ -93,7 +93,7 @@ class Service extends Object
 	/**
 	 * @return bool
 	 */
-	protected function commit()
+	public function commit()
 	{
 		$this->transactionDepth--;
 
@@ -109,7 +109,7 @@ class Service extends Object
 	/**
 	 * @return bool
 	 */
-	protected function rollBack()
+	public function rollBack()
 	{
 		$this->transactionDepth = 0;
 
