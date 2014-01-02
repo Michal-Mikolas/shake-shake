@@ -9,7 +9,7 @@ use Nette\Object,
 	Nette\Database\Table\ActiveRow,
 	Nette\MemberAccessException,
 	Nette\InvalidArgumentException,
-	Nette\BadRequestException;
+	Nette\Application\BadRequestException;
 
 
 /**
