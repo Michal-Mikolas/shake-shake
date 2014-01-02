@@ -34,13 +34,13 @@ class Container extends Nette\DI\Container
 		} catch (Nette\DI\MissingServiceException $e) {
 
 			// Repository
-			if (strrpos($name, 'Repository') == (strlen($name) - 10)) {
+			if (strrpos($name, 'Repository') === (strlen($name) - 10)) {
 				$this->registry[$name] = $this->createRepository($name);
 				return $this->registry[$name];
 			}
 
 			// Service
-			if (strrpos($name, 'Service') == (strlen($name) - 7)) {
+			if (strrpos($name, 'Service') === (strlen($name) - 7)) {
 				$this->registry[$name] = $this->createService($name);
 				return $this->registry[$name];
 			}
