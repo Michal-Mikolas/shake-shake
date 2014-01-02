@@ -77,17 +77,24 @@ class Repository extends Object
 
 
 
-	/**
+ 	/**
 	 * @param int
+	 * @param int|array
 	 * @return ActiveRow|FALSE
 	 */
-	public function find($id) 
+	public function find($conditions) 
 	{
-		return $this->select()
-					->where('id', $id)
-					->limit(1)
-					->fetch();
-	}
+		$selection = $this->select();
+
+		if (is_array($conditions)) {
+			$conditions = $this->fixConditions($conditions);
+			$selection->where($conditions);
+		} else {
+			$selection->where($this->prefix('id'), $conditions);
+		}
+
+		return $selection->limit(1)->fetch();
+ 	}
 
 
 
@@ -100,11 +107,14 @@ class Repository extends Object
 	{
 		$selection = $this->select();
 
-		if ($conditions) 
+		if ($conditions) {
+			$conditions = $this->fixConditions($conditions);
 			$selection->where($conditions);
+		}
 
-		if ($limit) 
+		if ($limit) {
 			$selection->limit($limit[0], $limit[1]);
+		}
 
 		return $selection;
 	}
@@ -282,6 +292,7 @@ class Repository extends Object
 
 		} else {
 			$name = $this->toUnderscoreCase($name);
+			$name = $this->prefix($name);
 
 			return $this->select()
 						->where($name, $value)
@@ -305,6 +316,7 @@ class Repository extends Object
 
 		} else {
 			$name = $this->toUnderscoreCase($name);
+			$name = $this->prefix($name);
 
 			$selection = $this->select()
 				->where($name, $value);
@@ -376,6 +388,39 @@ class Repository extends Object
 	private function toUnderscoreCase($name)
 	{
 		return strtolower(preg_replace('/([a-z0-9])([A-Z])/', '$1_$2', $name));
+	}
+
+
+
+	/**
+	 * Prepend column name with table name
+	 * @param string
+	 * @return string
+	 */
+	private function prefix($columnName)
+	{
+		if (strpos($columnName, '.') || strpos($columnName, ':'))
+			return $columnName;
+
+		return $this->getTableName() . ".$columnName";
+	}
+
+
+
+	/**
+	 * Fix condition's column names for SELECT with JOINs
+	 * @param array
+	 * @return array
+	 */
+	private function fixConditions($conditions)
+	{
+		$fixedConditions = array();
+		foreach ($conditions as $key => $value) {
+			$prefixedKey = $this->prefix($key);
+			$fixedConditions[$prefixedKey] = $conditions[$key];
+		}
+
+		return $fixedConditions;
 	}
 
 }

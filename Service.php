@@ -18,6 +18,9 @@ class Service extends Object
 	/** @var string */
 	private $repositoryName;
 
+	/** @var int */
+	private $transactionDepth = 0;
+
 
 	
 	/**
@@ -72,10 +75,54 @@ class Service extends Object
 
 
 	/**
+	 * @return bool
+	 */
+	protected function beginTransaction()
+	{
+		$this->transactionDepth++;
+
+		if ($this->transactionDepth == 1) {
+			return $this->getConnection()->beginTransaction();
+		} else {
+			return FALSE;
+		}
+	}
+
+
+
+	/**
+	 * @return bool
+	 */
+	protected function commit()
+	{
+		$this->transactionDepth--;
+
+		if ($this->transactionDepth == 0) {
+			return $this->getConnection()->commit();
+		} else {
+			return TRUE;
+		}
+	}
+
+
+
+	/**
+	 * @return bool
+	 */
+	protected function rollBack()
+	{
+		$this->transactionDepth = 0;
+
+		return $this->getConnection()->rollBack();
+	}
+
+
+
+	/**
 	 * Detect repository name based on actual sevice name
 	 * @return string
 	 */
-	protected function detectRepositoryName()
+	private function detectRepositoryName()
 	{
 		$name = get_class($this);                     // FooBarService
 		$name = substr($name, 0, strlen($name) - 7);  // FooBar
