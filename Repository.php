@@ -133,7 +133,7 @@ class Repository extends Object
 
 		$pairs = array();
 		foreach ($selection as $row) {
-			$pairs[$row->$key] = $row->value;
+			$pairs[$row->$key] = $row->$value;
 		}
 
 		return $pairs;
