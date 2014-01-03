@@ -122,6 +122,26 @@ class Repository extends Object
 
 
 	/**
+	 * @param string  key column name
+	 * @param string  value column name
+	 * @param array|NULL
+	 * @return array
+	 */
+	public function fetchPairs($key, $value, $conditions = NULL)
+	{
+		$selection = $this->search($conditions);
+
+		$pairs = array();
+		foreach ($selection as $row) {
+			$pairs[$row->$key] = $row->value;
+		}
+
+		return $pairs;
+	}
+
+
+
+	/**
 	 * @param array
 	 * @return ActiveRow|FALSE
 	 */
