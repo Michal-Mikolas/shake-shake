@@ -79,13 +79,7 @@ class Service extends Object
 	 */
 	public function beginTransaction()
 	{
-		$this->transactionDepth++;
-
-		if ($this->transactionDepth == 1) {
-			return $this->getConnection()->beginTransaction();
-		} else {
-			return FALSE;
-		}
+		return $this->getConnection()->beginTransaction();
 	}
 
 
@@ -95,13 +89,7 @@ class Service extends Object
 	 */
 	public function commit()
 	{
-		$this->transactionDepth--;
-
-		if ($this->transactionDepth == 0) {
-			return $this->getConnection()->commit();
-		} else {
-			return TRUE;
-		}
+		return $this->getConnection()->commit();
 	}
 
 
@@ -111,8 +99,6 @@ class Service extends Object
 	 */
 	public function rollBack()
 	{
-		$this->transactionDepth = 0;
-
 		return $this->getConnection()->rollBack();
 	}
 
