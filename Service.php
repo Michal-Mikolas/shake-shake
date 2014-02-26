@@ -18,9 +18,6 @@ class Service extends Object
 	/** @var string */
 	private $repositoryName;
 
-	/** @var int */
-	private $transactionDepth = 0;
-
 
 	
 	/**
