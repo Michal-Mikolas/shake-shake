@@ -3,10 +3,8 @@ namespace Shake;
 
 use Shake\Utils\Strings;
 use Nette\Object,
-	Nette\Database\Connection,
-	Nette\Database\Table\Selection,
-	Nette\Database\Table\GroupedSelection,
-	Nette\Database\Table\ActiveRow,
+	Nette\Database\Table\IRowContainer,
+	Nette\Database\Table\IRow,
 	Nette\MemberAccessException,
 	Nette\InvalidArgumentException,
 	Nette\Application\BadRequestException;
@@ -21,7 +19,7 @@ use Nette\Object,
  */
 class Repository extends Object
 {
-	/** @var Connection */
+	/** @var Database\Contect */
 	private $connection;
 
 	/** @var string */
@@ -29,7 +27,7 @@ class Repository extends Object
 
 
 
-	public function __construct(Connection $connection)
+	public function __construct($connection)
 	{
 		$this->connection = $connection;
 	}
@@ -62,7 +60,7 @@ class Repository extends Object
 
 	/**
 	 * @param int
-	 * @return ActiveRow
+	 * @return IRow
 	 * @throws Nette\Application\BadRequestException
 	 */
 	public function get($id) 
@@ -80,7 +78,7 @@ class Repository extends Object
  	/**
 	 * @param int
 	 * @param int|array
-	 * @return ActiveRow|FALSE
+	 * @return IRow|FALSE
 	 */
 	public function find($conditions) 
 	{
@@ -101,7 +99,7 @@ class Repository extends Object
 	/**
 	 * @param array|NULL
 	 * @param array|NULL
-	 * @return Selection
+	 * @return IRowContainer
 	 */
 	public function search($conditions = NULL, $limit = NULL) 
 	{
@@ -138,7 +136,7 @@ class Repository extends Object
 
 	/**
 	 * @param array
-	 * @return ActiveRow|FALSE
+	 * @return IRow|FALSE
 	 */
 	public function create($values) 
 	{
@@ -176,7 +174,7 @@ class Repository extends Object
 	 */
 	public function count($data)
 	{
-		if ($data instanceof Selection) {
+		if ($data instanceof IRowContainer) {
 			return $data->count('*');
 
 		} else {
@@ -195,10 +193,10 @@ class Repository extends Object
 	public function applyLimit($data, $limit, $offset)
 	{
 		// Selection
-		if (($data instanceof Selection) && !($data instanceof GroupedSelection)) {
+		if ($data instanceof IRowContainer) {
 			return $data->limit($limit, $offset);
 
-		// GroupedSelection
+		// Iterator
 		} elseif ($data instanceof Iterator) {
 			$data = iterator_to_array($data);
 			return array_slice($data, $offset, $limit);
@@ -280,7 +278,7 @@ class Repository extends Object
 	/**
 	 * @param string
 	 * @param mixed
-	 * @return ActiveRow|FALSE
+	 * @return IRow|FALSE
 	 * @throws Nette\Application\BadRequestException
 	 */
 	public function getBy($name, $value)
@@ -298,7 +296,7 @@ class Repository extends Object
 	/**
 	 * @param string
 	 * @param mixed
-	 * @return ActiveRow|FALSE
+	 * @return IRow|FALSE
 	 */
 	public function findBy($name, $value)
 	{
@@ -315,9 +313,9 @@ class Repository extends Object
 
 	/**
 	 * @param string
-	 * @param mixed|ActiveRow
+	 * @param mixed
 	 * @param array|NULL
-	 * @return Selection
+	 * @return IRowContainer
 	 */
 	public function searchBy($name, $value, $limit = NULL)
 	{
@@ -352,7 +350,7 @@ class Repository extends Object
 	/**
 	 * @param string
 	 * @param mixed
-	 * @return ActiveRow|FALSE
+	 * @return int|FALSE
 	 * @throws Nette\Application\BadRequestException
 	 */
 	public function deleteBy($name, $value)
@@ -363,7 +361,7 @@ class Repository extends Object
 
 
 	/**
-	 * @return Selection
+	 * @return IRowContainer
 	 */
 	protected function select()
 	{
