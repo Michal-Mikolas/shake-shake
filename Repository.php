@@ -127,16 +127,11 @@ class Repository extends Object
 	 * @param array|NULL
 	 * @return array
 	 */
-	public function fetchPairs($key, $value, $conditions = NULL)
+	public function fetchPairs($key, $value = NULL, $conditions = NULL)
 	{
 		$selection = $this->search($conditions);
 
-		$pairs = array();
-		foreach ($selection as $row) {
-			$pairs[$row->$key] = $row->$value;
-		}
-
-		return $pairs;
+		return $selection->fetchPairs($key, $value);
 	}
 
 
