@@ -279,7 +279,7 @@ class Repository extends Object
 
 	/**
 	 * @param string
-	 * @param mixed|ActiveRow
+	 * @param mixed
 	 * @return ActiveRow|FALSE
 	 * @throws Nette\Application\BadRequestException
 	 */
@@ -297,23 +297,18 @@ class Repository extends Object
 
 	/**
 	 * @param string
-	 * @param mixed|ActiveRow
+	 * @param mixed
 	 * @return ActiveRow|FALSE
 	 */
 	public function findBy($name, $value)
 	{
-		if ($value instanceof ActiveRow) {
-			return $value->{$this->getTableName()};
+		$name = $this->toUnderscoreCase($name);
+		$name = $this->prefix($name);
 
-		} else {
-			$name = $this->toUnderscoreCase($name);
-			$name = $this->prefix($name);
-
-			return $this->select()
-						->where($name, $value)
-						->limit(1)
-						->fetch();			
-		}
+		return $this->select()
+					->where($name, $value)
+					->limit(1)
+					->fetch();
 	}
 
 
@@ -326,21 +321,16 @@ class Repository extends Object
 	 */
 	public function searchBy($name, $value, $limit = NULL)
 	{
-		if ($value instanceof ActiveRow) {
-			return $value->related($this->getTableName());
+		$name = $this->toUnderscoreCase($name);
+		$name = $this->prefix($name);
 
-		} else {
-			$name = $this->toUnderscoreCase($name);
-			$name = $this->prefix($name);
+		$selection = $this->select()
+			->where($name, $value);
 
-			$selection = $this->select()
-				->where($name, $value);
+		if ($limit)
+			$selection->limit($limit[0], $limit[1]);
 
-			if ($limit)
-				$selection->limit($limit[0], $limit[1]);
-
-			return $selection;
-		}
+		return $selection;
 	}
 
 
@@ -350,10 +340,11 @@ class Repository extends Object
 	 * @param mixed
 	 * @param array
 	 * @return int
+	 * @throws Nette\Application\BadRequestException
 	 */
 	public function updateBy($name, $value, $values)
 	{
-		return $this->findBy($name, $value)->update($values);
+		return $this->getBy($name, $value)->update($values);
 	}
 
 
@@ -362,10 +353,11 @@ class Repository extends Object
 	 * @param string
 	 * @param mixed
 	 * @return ActiveRow|FALSE
+	 * @throws Nette\Application\BadRequestException
 	 */
 	public function deleteBy($name, $value)
 	{
-		return $this->findBy($name, $value)->delete();
+		return $this->getBy($name, $value)->delete();
 	}
 
 
