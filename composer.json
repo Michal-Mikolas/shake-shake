@@ -28,6 +28,13 @@
 	"require": {
 		"php": ">=5.3.0",
 		"nette/nette": "2.0.*",
+		
+		"shake/utils": "dev-master",
+		"shake/di": "dev-master",
+		"shake/application": "dev-master",
+		"shake/database": "dev-master",
+		"shake/scaffolding": "dev-master",
+		
 		"jrslv/vp-nette-bootstrap": "dev-master"
 	}
 }
