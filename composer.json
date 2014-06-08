@@ -23,6 +23,7 @@
 		"shake/di": "dev-master",
 		"shake/application": "dev-master",
 		"shake/database": "dev-master",
-		"shake/scaffolding": "dev-master"
+		"shake/scaffolding": "dev-master",
+		"shake/components": "dev-master"
 	}
 }
