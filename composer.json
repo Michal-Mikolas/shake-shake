@@ -7,23 +7,22 @@
 	"authors": [
 		{
 			"name": "Michal Mikoláš",
-			"homepage": "http://michal.webshake.cz"
+			"homepage": "http://www.michalm.cz"
 		}
 	],
-	"minimum-stability": "dev",
 	"autoload": {
 		"classmap": [""]
 	},
 	"require": {
 		"php": ">=5.4.0",
-		"nette/nette": ">=2.2.0",
+		"nette/nette": "2.3.*",
 		"nasext/visual-paginator": "*",
 		
-		"shake/utils": "dev-master",
-		"shake/di": "dev-master",
-		"shake/application": "dev-master",
-		"shake/database": "dev-master",
-		"shake/scaffolding": "dev-master",
-		"shake/components": "dev-master"
+		"shake/application": "2.3.*",
+		"shake/components": "2.3.*",
+		"shake/database": "2.3.*",
+		"shake/di": "2.3.*",
+		"shake/scaffolding": "2.3.*",
+		"shake/utils": "2.3.*"
 	}
 }
