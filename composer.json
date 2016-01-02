@@ -18,11 +18,10 @@
 		"nette/nette": "2.3.*",
 		"nasext/visual-paginator": "*",
 		
-		"shake/application": "2.3.*",
-		"shake/components": "2.3.*",
-		"shake/database": "2.3.*",
-		"shake/di": "2.3.*",
-		"shake/scaffolding": "2.3.*",
+		"shake/application": "~2.3.2",
+		"shake/components": "~2.3.4",
+		"shake/database": "~2.3.1",
+		"shake/scaffolding": "~2.3.3",
 		"shake/utils": "2.3.*"
 	}
 }
