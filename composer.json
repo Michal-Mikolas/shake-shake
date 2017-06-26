@@ -16,9 +16,9 @@
 	},
 	"require": {
 		"php": ">=5.4.0",
-		"nette/nette": ">=2.2.0",
+		"nette/nette": "2.4.*",
 		"nasext/visual-paginator": "*",
-		
+
 		"shake/utils": "dev-master",
 		"shake/di": "dev-master",
 		"shake/application": "dev-master",
