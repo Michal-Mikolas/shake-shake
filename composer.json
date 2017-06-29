@@ -19,11 +19,11 @@
 		"nette/nette": "2.4.*",
 		"nasext/visual-paginator": "*",
 
-		"shake/utils": "dev-master",
-		"shake/di": "dev-master",
-		"shake/application": "dev-master",
-		"shake/database": "dev-master",
-		"shake/scaffolding": "dev-master",
-		"shake/components": "dev-master"
+		"shake/utils": "2.4.*",
+		"shake/di": "2.4.*",
+		"shake/application": "2.4.*",
+		"shake/database": "2.4.*",
+		"shake/scaffolding": "2.4.*",
+		"shake/components": "2.4.*"
 	}
 }
