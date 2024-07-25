@@ -15,14 +15,14 @@
 		"classmap": [""]
 	},
 	"require": {
-		"php": ">=7.1.0",
-		"nette/nette": "3.0.*",
+		"php": ">=8.1.0",
+		"nette/nette": "4.0.*",
 
-		"shake/utils": "3.0.*",
-		"shake/di": "3.0.*",
-		"shake/application": "3.0.*",
-		"shake/database": "3.0.*",
-		"shake/scaffolding": "3.0.*",
-		"shake/components": "3.0.*"
+		"shake/utils": "4.0.*",
+		"shake/di": "4.0.*",
+		"shake/application": "4.0.*",
+		"shake/database": "4.0.*",
+		"shake/scaffolding": "4.0.*",
+		"shake/components": "4.0.*"
 	}
 }
